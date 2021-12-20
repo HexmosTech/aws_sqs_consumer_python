@@ -2,10 +2,10 @@
 
 ## Installation
 
-Currently available via [https://test.pypi.org/](https://test.pypi.org/)
+Currently available via [https://test.pypi.org/project/aws-sqs-consumer/](https://test.pypi.org/project/aws-sqs-consumer/)
 
 ```
-pip install -i https://test.pypi.org/simple/ aws-sqs-consumer==0.0.3a3
+pip install -i https://test.pypi.org/simple/ aws-sqs-consumer==0.0.4
 ```
 
 ## Usage
