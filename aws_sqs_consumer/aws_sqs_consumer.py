@@ -3,10 +3,18 @@ import boto3
 import time
 
 class Consumer(ABC):
-    def __init__(self, queue_url, sqs_client=None, polling_wait_time_ms=0):
+    def __init__(
+        self,
+        queue_url,
+        region='eu-west-1',
+        sqs_client=None,
+        attribute_names=[],
+        polling_wait_time_ms=0
+    ):
         self.queue_url = queue_url
+        self.attribute_names = attribute_names
         self.polling_wait_time_ms = polling_wait_time_ms
-        self._sqs_cilent = sqs_client or boto3.client('sqs')
+        self._sqs_cilent = sqs_client or boto3.client('sqs', region_name=region)
 
     @abstractmethod
     def handle_message(self, message):
@@ -21,6 +29,7 @@ class Consumer(ABC):
                 QueueUrl=self.queue_url,
                 MaxNumberOfMessages=1,
                 WaitTimeSeconds=0,
+                AttributeNames=self.attribute_names
             )
             
             if not response.get('Messages', []):

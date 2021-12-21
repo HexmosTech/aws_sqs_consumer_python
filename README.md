@@ -5,7 +5,7 @@
 Currently available via [https://test.pypi.org/project/aws-sqs-consumer/](https://test.pypi.org/project/aws-sqs-consumer/)
 
 ```
-pip install -i https://test.pypi.org/simple/ aws-sqs-consumer==0.0.4
+pip install -i https://test.pypi.org/simple/ aws-sqs-consumer==0.0.5
 ```
 
 ## Usage
