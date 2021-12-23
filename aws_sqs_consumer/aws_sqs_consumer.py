@@ -15,6 +15,7 @@ class Consumer(ABC):
         self.attribute_names = attribute_names
         self.polling_wait_time_ms = polling_wait_time_ms
         self._sqs_cilent = sqs_client or boto3.client('sqs', region_name=region)
+        self._running = False
 
     @abstractmethod
     def handle_message(self, message):
@@ -24,7 +25,9 @@ class Consumer(ABC):
         pass
 
     def start(self):
-        while True:
+        # TODO: Figure out threading/daemon
+        self._running = True
+        while self._running:
             response = self._sqs_cilent.receive_message(
                 QueueUrl=self.queue_url,
                 MaxNumberOfMessages=1,
@@ -44,6 +47,10 @@ class Consumer(ABC):
                 self.handle_processing_exception(message, exception)
             finally:
                 self._polling_wait()
+
+    def stop(self):
+        # TODO: There's no way to invoke this other than a separate thread.
+        self._running = False
 
     def _delete_message(self, message):
         response = self._sqs_cilent.delete_message(
