@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='aws_sqs_consumer',
-    version='0.0.5',    
+    version='0.0.6',    
     description='AWS SQS Consumer',
     url='https://github.com/FlyweightGroup/aws_sqs_consumer_python',
     author='Flyweight Group',
