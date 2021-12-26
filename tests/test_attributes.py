@@ -2,7 +2,7 @@ import unittest
 
 from aws_sqs_consumer import Consumer
 
-class TestSQSConsumer(Consumer):
+class SimpleSQSConsumer(Consumer):
     def handle_message(self, message):
         pass
 
@@ -16,10 +16,10 @@ class TestConsumerAttributes(unittest.TestCase):
 
     def test_mandatory_queue_url(self):
         with self.assertRaisesRegex(TypeError, 'queue_url'):
-            TestSQSConsumer()
+            SimpleSQSConsumer()
 
     def test_default_attributes(self):
-        sqs_consumer = TestSQSConsumer(queue_url=self.queue_url)
+        sqs_consumer = SimpleSQSConsumer(queue_url=self.queue_url)
         self.assertEqual(sqs_consumer.queue_url, self.queue_url)
         self.assertEqual(sqs_consumer.attribute_names, [])
         self.assertEqual(sqs_consumer.polling_wait_time_ms, 0)

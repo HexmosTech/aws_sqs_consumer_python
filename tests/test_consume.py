@@ -13,7 +13,7 @@ class TestConsumeMessage(unittest.TestCase):
         messages = []
         class TestConsumer(Consumer):
             def handle_message(self, message):
-                messages.append(message['Body'])
+                messages.append(message.Body)
 
         sqs = boto3.resource('sqs', region_name='eu-west-1')
         queue = sqs.create_queue(QueueName="test_queue")

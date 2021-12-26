@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 import boto3
 import time
 
+from .message import Message
+
 class Consumer(ABC):
     def __init__(
         self,
@@ -18,10 +20,10 @@ class Consumer(ABC):
         self._running = False
 
     @abstractmethod
-    def handle_message(self, message):
+    def handle_message(self, message: Message):
         ...
 
-    def handle_processing_exception(self, message, exception):
+    def handle_processing_exception(self, message: Message, exception):
         pass
 
     def start(self):
@@ -32,14 +34,15 @@ class Consumer(ABC):
                 QueueUrl=self.queue_url,
                 MaxNumberOfMessages=1,
                 WaitTimeSeconds=0,
-                AttributeNames=self.attribute_names
+                AttributeNames=self.attribute_names,
+                MessageAttributeNames=['All']
             )
             
             if not response.get('Messages', []):
                 self._polling_wait()
                 continue
 
-            message = response['Messages'][0]
+            message = Message.parse(response['Messages'][0])
             try:
                 self.handle_message(message)
                 self._delete_message(message)
@@ -52,10 +55,10 @@ class Consumer(ABC):
         # TODO: There's no way to invoke this other than a separate thread.
         self._running = False
 
-    def _delete_message(self, message):
+    def _delete_message(self, message: Message):
         response = self._sqs_cilent.delete_message(
             QueueUrl=self.queue_url,
-            ReceiptHandle=message['ReceiptHandle']
+            ReceiptHandle=message.ReceiptHandle
         )
 
     def _polling_wait(self):

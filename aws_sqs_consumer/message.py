@@ -11,6 +11,10 @@ class MessageAttributeValue:
     BinaryListValues: List[bytes] = field(default_factory=list)
     DataType: str = ""
 
+    @staticmethod
+    def parse(attribute_value_dict):
+        return MessageAttributeValue(**attribute_value_dict)
+
 
 @dataclass
 class Message:
@@ -24,3 +28,14 @@ class Message:
     MessageAttributes: Dict[str, MessageAttributeValue] = field(
         default_factory=dict
     )
+
+    @staticmethod
+    def parse(message_dict):
+        message_attributes_dict = message_dict.get('MessageAttributes', {})
+        message_attributes = {
+            attribute: MessageAttributeValue.parse(attribute_value_dict)
+            for attribute, attribute_value_dict in message_attributes_dict.items()
+        }
+        message = Message(**message_dict)
+        message.MessageAttributes = message_attributes
+        return message
