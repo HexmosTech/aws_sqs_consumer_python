@@ -5,17 +5,17 @@
 Currently available via [https://test.pypi.org/project/aws-sqs-consumer/](https://test.pypi.org/project/aws-sqs-consumer/)
 
 ```
-pip install -i https://test.pypi.org/simple/ aws-sqs-consumer==0.0.7
+pip install -i https://test.pypi.org/simple/ aws-sqs-consumer
 ```
 
 ## Usage
 
 ```python
-from aws_sqs_consumer import Consumer
+from aws_sqs_consumer import Consumer, Message
 
 class MyConsumer(Consumer):
-    def handle_message(self, message):
-        print("Received message ", message['Body'])
+    def handle_message(self, message: Message):
+        print("Received message: ", message.Body)
 
 consumer = MyConsumer(
     queue_url="https://sqs.us-east-1.amazonaws.com/12345678901/test_queue",
