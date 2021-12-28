@@ -1,11 +1,21 @@
+"""
+SQS consumer
+"""
+
 import boto3
 import time
+import traceback
 from typing import List
 
+from .error import SQSException
 from .message import Message
 
 
 class Consumer:
+    """
+    SQS consumer implementation.
+    """
+
     def __init__(
         self,
         queue_url,
@@ -32,18 +42,55 @@ class Consumer:
         self._running = False
 
     def handle_message(self, message: Message):
+        """
+        Called when a single message is received.
+        Write your own logic for handling the message by overriding this method.
+
+        Note:
+            * If `batch_size` is greater than 1, `handle_message_batch(message)`
+              is called instead.
+            * Any unhandled exception will be available in
+              `handle_processing_exception(message, exception)` method.
+        """
         ...
 
     def handle_message_batch(self, messages: List[Message]):
+        """
+        Called when a message batch is received.
+        Write your own logic for handling the message batch by overriding this method.
+
+        Note:
+            * If `batch_size` equal to 1, `handle_message(message)`
+              is called instead.
+            * Any unhandled exception will be available in
+              `handle_batch_processing_exception(message, exception)` method.
+        """
         ...
 
     def handle_processing_exception(self, message: Message, exception):
-        ...
+        """
+        Called when an exception is thrown while processing a message
+        including messsage deletion from the queue.
+
+        By default, this prints the exception traceback.
+        Override this method to write any custom logic.
+        """
+        traceback.print_exc()
 
     def handle_batch_processing_exception(self, messages: List[Message], exception):
-        ...
+        """
+        Called when an exception is thrown while processing a message batch
+        including messsage batch deletion from the queue.
+
+        By default, this prints the exception traceback.
+        Override this method to write any custom logic.
+        """
+        traceback.print_exc()
 
     def start(self):
+        """
+        Start the consumer.
+        """
         # TODO: Figure out threading/daemon
         self._running = True
         while self._running:
@@ -65,6 +112,9 @@ class Consumer:
                 self._process_message_batch(messages)
 
     def stop(self):
+        """
+        Stop the consumer.
+        """
         # TODO: There's no way to invoke this other than a separate thread.
         self._running = False
 
@@ -87,24 +137,28 @@ class Consumer:
             self._polling_wait()
 
     def _delete_message(self, message: Message):
-        # TODO: Exception handling
-        response = self._sqs_cilent.delete_message(
-            QueueUrl=self.queue_url,
-            ReceiptHandle=message.ReceiptHandle
-        )
+        try:
+            self._sqs_cilent.delete_message(
+                QueueUrl=self.queue_url,
+                ReceiptHandle=message.ReceiptHandle
+            )
+        except Exception:
+            raise SQSException("Failed to delete message")
 
     def _delete_message_batch(self, messages: List[Message]):
-        # TODO: Exception handling
-        response = self._sqs_cilent.delete_message_batch(
-            QueueUrl=self.queue_url,
-            Entries=[
-                {
-                    'Id': message.MessageId,
-                    'ReceiptHandle': message.ReceiptHandle
-                }
-                for message in messages
-            ]
-        )
+        try:
+            self._sqs_cilent.delete_message_batch(
+                QueueUrl=self.queue_url,
+                Entries=[
+                    {
+                        'Id': message.MessageId,
+                        'ReceiptHandle': message.ReceiptHandle
+                    }
+                    for message in messages
+                ]
+            )
+        except Exception:
+            raise SQSException("Failed to delete message batch")
 
     @property
     def _sqs_client_params(self):
