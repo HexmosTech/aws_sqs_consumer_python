@@ -32,7 +32,12 @@ class Consumer:
         self.queue_url = queue_url
         self.attribute_names = attribute_names
         self.message_attribute_names = message_attribute_names
-        self.batch_size = batch_size  # TODO: Validate 1-10
+
+        if not 1 <= batch_size <= 10:
+            raise ValueError(
+                "Batch size should be between 1 and 10, both inclusive")
+        self.batch_size = batch_size
+
         self.wait_time_seconds = wait_time_seconds
         self.visibility_timeout_seconds = visibility_timeout_seconds
         self.polling_wait_time_ms = polling_wait_time_ms

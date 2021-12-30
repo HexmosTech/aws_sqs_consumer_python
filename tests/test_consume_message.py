@@ -137,3 +137,38 @@ class TestConsumeMessage(unittest.TestCase):
             received_attrs["attr3"],
             MessageAttributeValue(**message_attributes["attr3"])
         )
+
+    @mock_sqs
+    def test_message_visibility_timeout(self):
+        messages = []
+        exceptions = []
+        attempted = False
+
+        class TestConsumer(Consumer):
+            def handle_message(self, message: Message):
+                nonlocal attempted
+                if not attempted:
+                    attempted = True
+                    raise Exception("handle exception")
+                else:
+                    messages.append(message.Body)
+
+            def handle_processing_exception(self, message: Message, exception):
+                exceptions.append(exception)
+
+        with async_sqs(
+            TestConsumer,
+            timeout_seconds=10,
+            visibility_timeout_seconds=5
+        ) as (sqs_client, queue):
+            sqs_client.send_message(
+                QueueUrl=queue["QueueUrl"],
+                MessageBody="test_message",
+            )
+
+        self.assertTrue(len(messages) == 1)
+        self.assertEqual(messages[0], "test_message")
+
+        self.assertEqual(len(exceptions), 1)
+        self.assertEqual(type(exceptions[0]), Exception)
+        self.assertEqual(str(exceptions[0]), "handle exception")

@@ -56,3 +56,9 @@ class TestConsumerAttributes(unittest.TestCase):
             receive_request_attempt_id="test_id"
         )
         self.assertEqual(consumer.receive_request_attempt_id, "test_id")
+
+    def test_invalid_batch_size(self):
+        with self.assertRaisesRegex(
+            ValueError, "Batch size should be between 1 and 10, both inclusive"
+        ):
+            SimpleSQSConsumer(queue_url=self.queue_url, batch_size=11)
