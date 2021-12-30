@@ -31,7 +31,7 @@ class Message:
 
     @staticmethod
     def parse(message_dict):
-        message_attributes_dict = message_dict.get('MessageAttributes', {})
+        message_attributes_dict = message_dict.get("MessageAttributes", {})
         message_attributes = {
             attribute: MessageAttributeValue.parse(attribute_value_dict)
             for attribute, attribute_value_dict in message_attributes_dict.items()

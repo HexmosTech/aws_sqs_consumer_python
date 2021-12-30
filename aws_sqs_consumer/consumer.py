@@ -19,7 +19,7 @@ class Consumer:
     def __init__(
         self,
         queue_url,
-        region='eu-west-1',
+        region="eu-west-1",
         sqs_client=None,
         attribute_names=[],
         message_attribute_names=[],
@@ -38,7 +38,7 @@ class Consumer:
         self.polling_wait_time_ms = polling_wait_time_ms
         self.receive_request_attempt_id = receive_request_attempt_id
         self._sqs_cilent = sqs_client or boto3.client(
-            'sqs', region_name=region)
+            "sqs", region_name=region)
         self._running = False
 
     def handle_message(self, message: Message):
@@ -97,13 +97,13 @@ class Consumer:
             response = self._sqs_cilent.receive_message(
                 **self._sqs_client_params)
 
-            if not response.get('Messages', []):
+            if not response.get("Messages", []):
                 self._polling_wait()
                 continue
 
             messages = [
                 Message.parse(message_dict)
-                for message_dict in response['Messages']
+                for message_dict in response["Messages"]
             ]
 
             if self.batch_size == 1:
@@ -151,8 +151,8 @@ class Consumer:
                 QueueUrl=self.queue_url,
                 Entries=[
                     {
-                        'Id': message.MessageId,
-                        'ReceiptHandle': message.ReceiptHandle
+                        "Id": message.MessageId,
+                        "ReceiptHandle": message.ReceiptHandle
                     }
                     for message in messages
                 ]

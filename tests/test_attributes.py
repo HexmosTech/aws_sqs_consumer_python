@@ -13,7 +13,7 @@ class TestConsumerAttributes(unittest.TestCase):
         self.queue_url = "https://eu-west-1.queue.amazonaws.com/123456789012/test_queue"
 
     def test_mandatory_queue_url(self):
-        with self.assertRaisesRegex(TypeError, 'queue_url'):
+        with self.assertRaisesRegex(TypeError, "queue_url"):
             SimpleSQSConsumer()
 
     def test_default_attributes(self):
@@ -31,9 +31,9 @@ class TestConsumerAttributes(unittest.TestCase):
         consumer = SimpleSQSConsumer(
             queue_url=self.queue_url,
             attribute_names=[
-                'ApproximateFirstReceiveTimestamp', 'MaximumMessageSize'
+                "ApproximateFirstReceiveTimestamp", "MaximumMessageSize"
             ],
-            message_attribute_names=['attr1', 'attr2'],
+            message_attribute_names=["attr1", "attr2"],
             batch_size=5,
             wait_time_seconds=10,
             visibility_timeout_seconds=30,
@@ -42,9 +42,9 @@ class TestConsumerAttributes(unittest.TestCase):
         self.assertEqual(consumer.queue_url, self.queue_url)
         self.assertEqual(
             consumer.attribute_names,
-            ['ApproximateFirstReceiveTimestamp', 'MaximumMessageSize']
+            ["ApproximateFirstReceiveTimestamp", "MaximumMessageSize"]
         )
-        self.assertEqual(consumer.message_attribute_names, ['attr1', 'attr2'])
+        self.assertEqual(consumer.message_attribute_names, ["attr1", "attr2"])
         self.assertEqual(consumer.batch_size, 5)
         self.assertEqual(consumer.wait_time_seconds, 10)
         self.assertEqual(consumer.visibility_timeout_seconds, 30)
@@ -53,6 +53,6 @@ class TestConsumerAttributes(unittest.TestCase):
     def test_attr_fifo_request_attempt_id(self):
         consumer = SimpleSQSConsumer(
             queue_url=self.queue_url,
-            receive_request_attempt_id='test_id'
+            receive_request_attempt_id="test_id"
         )
-        self.assertEqual(consumer.receive_request_attempt_id, 'test_id')
+        self.assertEqual(consumer.receive_request_attempt_id, "test_id")
