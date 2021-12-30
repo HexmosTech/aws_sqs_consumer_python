@@ -25,7 +25,6 @@ class TestConsumerAttributes(unittest.TestCase):
         self.assertEqual(consumer.wait_time_seconds, 1)
         self.assertEqual(consumer.visibility_timeout_seconds, None)
         self.assertEqual(consumer.polling_wait_time_ms, 0)
-        self.assertEqual(consumer.receive_request_attempt_id, None)
 
     def test_all_attributes(self):
         consumer = SimpleSQSConsumer(
@@ -49,13 +48,6 @@ class TestConsumerAttributes(unittest.TestCase):
         self.assertEqual(consumer.wait_time_seconds, 10)
         self.assertEqual(consumer.visibility_timeout_seconds, 30)
         self.assertEqual(consumer.polling_wait_time_ms, 1000)
-
-    def test_attr_fifo_request_attempt_id(self):
-        consumer = SimpleSQSConsumer(
-            queue_url=self.queue_url,
-            receive_request_attempt_id="test_id"
-        )
-        self.assertEqual(consumer.receive_request_attempt_id, "test_id")
 
     def test_invalid_batch_size(self):
         with self.assertRaisesRegex(

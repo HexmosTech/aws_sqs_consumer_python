@@ -26,8 +26,7 @@ class Consumer:
         batch_size=1,
         wait_time_seconds=1,
         visibility_timeout_seconds=None,
-        polling_wait_time_ms=0,
-        receive_request_attempt_id=None
+        polling_wait_time_ms=0
     ):
         self.queue_url = queue_url
         self.attribute_names = attribute_names
@@ -41,7 +40,6 @@ class Consumer:
         self.wait_time_seconds = wait_time_seconds
         self.visibility_timeout_seconds = visibility_timeout_seconds
         self.polling_wait_time_ms = polling_wait_time_ms
-        self.receive_request_attempt_id = receive_request_attempt_id
         self._sqs_cilent = sqs_client or boto3.client(
             "sqs", region_name=region)
         self._running = False
@@ -176,9 +174,6 @@ class Consumer:
         }
         if self.visibility_timeout_seconds is not None:
             params["VisibilityTimeout"] = self.visibility_timeout_seconds
-
-        if self.receive_request_attempt_id is not None:
-            params["ReceiveRequestAttemptId"] = self.receive_request_attempt_id
 
         return params
 
