@@ -1,6 +1,6 @@
 # Python AWS SQS Consumer
 
-![PyPI](https://img.shields.io/pypi/v/aws-sqs-consumer)
+![PyPI](https://img.shields.io/pypi/v/aws-sqs-consumer?color=blue)
 
 Write Amazon Simple Queue Service (SQS) consumers in Python with simplified interface. Define your logic to process an SQS message. After you're done processing, messages are deleted from the queue.
 
