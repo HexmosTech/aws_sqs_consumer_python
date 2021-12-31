@@ -1,6 +1,6 @@
 # Python AWS SQS Consumer
 
-Write Amazon Simple Queue Service (SQS) consumers in Python with simplified interface. Works based on long polling and deletes messages after processing.
+Write Amazon Simple Queue Service (SQS) consumers in Python with simplified interface. Define your logic to process an SQS message. After you're done processing, messages are deleted from the queue.
 
 Heavily inspired from [https://github.com/bbc/sqs-consumer](https://github.com/bbc/sqs-consumer), a similar JavaScript interface.
 
@@ -88,7 +88,7 @@ Creates a new SQS consumer. Default parameters:
 
 ```python
 consumer = Consumer(
-    queue_url,                      # REQUIRED
+    queue_url, # REQUIRED
     region="eu-west-1",
     sqs_client=None,
     attribute_names=[],
@@ -104,8 +104,8 @@ consumer = Consumer(
 
 | Attribute                                                                                                                     | Description                                                                                                                                                                                                                                                                                                                         | Default       | Example(s)                                                                                                                            |
 |-------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------|---------------------------------------------------------------------------------------------------------------------------------------|
-| `queue_url` (`string`)                                                                                                        | SQS Queue URL                                                                                                                                                                                                                                                                                                                       | **REQUIRED**  | `"https://sqs.eu-west-1.amazonaws.com/12345678901/test_queue"`                                                                        |
-| `region` (`string`)                                                                                                           | AWS region for internally creating an SQS client using `boto3`                                                                                                                                                                                                                                                                      | `"eu-west-1"` | `"us-east-1"`, `"ap-south-1"`                                                                                                         |
+| `queue_url` (`str`)                                                                                                           | SQS Queue URL                                                                                                                                                                                                                                                                                                                       | **REQUIRED**  | `"https://sqs.eu-west-1.amazonaws.com/12345678901/test_queue"`                                                                        |
+| `region` (`str`)                                                                                                              | AWS region for internally creating an SQS client using `boto3`                                                                                                                                                                                                                                                                      | `"eu-west-1"` | `"us-east-1"`, `"ap-south-1"`                                                                                                         |
 | `sqs_client` ([`boto3.SQS.Client`](https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/sqs.html#id57)) | Override this to pass your own SQS client. This takes precedence over `region`                                                                                                                                                                                                                                                      | `None`        | `sqs_client = boto3.client("sqs", region_name="ap-south-1")`                                                                          |
 | `attribute_names` (`list`)                                                                                                    | List of attributes that need to be returned along with each message.                                                                                                                                                                                                                                                                | `[]`          | - `["All"]` - Returns all values.<br>- `["ApproximateFirstReceiveTimestamp", "ApproximateReceiveCount", "SenderId", "SentTimestamp"]` |
 | `message_attribute_names` (`list`)                                                                                            | List of names of message attributes, i.e. metadata you have passed to each message while sending to the queue.                                                                                                                                                                                                                      | `[]`          | `["CustomAttr1", "CustomAttr2"]`                                                                                                      |
@@ -161,4 +161,72 @@ class BatchConsumer(Consumer):
 
     def handle_batch_processing_exception(messages: List[Message], exception):
         print(f"Exception occurred while processing message batch: {exception}")
+```
+
+### `Message`
+
+`Message` represents a single SQS message. It is defined as a Python `dataclass` with the following attributes:
+
+* `MessageId` (`str`) - A unique identifier for the message.
+* `ReceiptHandle` (`str`) - An identifier associated with the act of receiving the message.
+* `MD5OfBody` (`str`) - An MD5 digest of the non-URL-encoded message body string.
+* `Body` (`str`) - The message's contents.
+* `Attributes` (`Dict[str, str]`) - A map of the attributes requested in `attribute_names` parameter in `Consumer`.
+* `MD5OfMessageAttributes` (`str`) - An MD5 digest of the non-URL-encoded message attribute string.
+* `MessageAttributes` (`Dict[str, MessageAttributeValue]`) - Dictionary of user defined message attributes.
+
+Example:
+
+```python
+def handle_message(self, message: Message):
+    print("MessageID: ", message.MessageId)
+    print("ReceiptHandle: ", message.ReceiptHandle)
+    print("MD5OfBody: ", message.MD5OfBody)
+    print("Body: ", message.Body)
+    print("Attributes: ", message.Attributes)
+```
+
+```
+MessageID:  29bab209-989d-41f3-85b4-c0e9f8d8b7a9
+ReceiptHandle:  AQEBU2VaFVLF6eXzFVLwPIFCqrZC0twP+qzfy2mi...==
+MD5OfBody:  c72b9698fa1927e1dd12d3cf26ed84b3
+Body:  test message
+Attributes:  {'ApproximateFirstReceiveTimestamp': '1640985674001'}
+```
+
+### `MessageAttributeValue`
+
+`MessageAttributeValue` represents a user-defined SQS message attribute value. It is defined as a Python `dataclass` with the following attributes:
+
+* `StringValue` (`str`) - attribute value, if it is a `str`.
+* `BinaryValue` (`bytes`) - Binary type attributes can store any binary data, such as compressed data, encrypted data, or images.
+* `DataType` (`str`) - SQS supports `String`, `Number`, and `Binary`. For the Number data type, you must use `StringValue`.
+
+## FAQ
+
+### Does this support parallelization?
+
+No. A message is fetched from the queue, processed, next message is fetched, and so on.
+
+However, you can run multiple copies of your consumer script on different instances. Make sure you set a sufficient visibility timeout while creating the SQS queue: 
+* For example, consider you have set `5m` of visibility timeout and run two instances of the script. 
+* If `Consumer 1` receives message `m1` at `11:00 AM`, it has to be processed and deleted before `11:05 AM`. Otherwise, `Consumer 2` can receive `m1` after `11:05 AM` resulting in duplication.
+
+### How do I configure AWS access to the queue?
+
+The consumer needs permission to **receive** and **delete** messages from the queue. Here is a sample IAM Policy:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": ["sqs:ReceiveMessage", "sqs:DeleteMessage"],
+            "Resource": [
+                "arn:aws:sqs:eu-west-1:12345678901:test_queue",
+            ]
+        }
+    ]
+}
 ```
