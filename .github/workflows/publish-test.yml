@@ -3,6 +3,8 @@ name: Upload Python Package to test.pypi.org
 on:
   release:
     types: [published]
+    branches:
+      - main
 
 jobs:
   deploy:
