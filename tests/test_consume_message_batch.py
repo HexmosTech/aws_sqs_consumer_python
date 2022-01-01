@@ -13,12 +13,14 @@ class TestConsumeMessageBatch(unittest.TestCase):
 
         class TestBatchConsumer(Consumer):
             def handle_message_batch(self, message_batch: List[Message]):
-                message_batches.append([message.Body for message in message_batch])
+                message_batches.append(
+                    [message.Body for message in message_batch]
+                )
 
         with async_sqs(TestBatchConsumer, batch_size=5) as (sqs_client, queue):
             # Send 24 messages in batches of [10, 10, 4]
             entries = [
-                { "Id": f"m{i}", "MessageBody": f"test message {i}" }
+                {"Id": f"m{i}", "MessageBody": f"test message {i}"}
                 for i in range(24)
             ]
             sqs_client.send_message_batch(
@@ -36,7 +38,7 @@ class TestConsumeMessageBatch(unittest.TestCase):
 
         # There should be minimum of 24//5=5 batches
         self.assertGreaterEqual(len(message_batches), 5)
-        
+
         # Maximum of the all batches should be 5
         self.assertEqual(len(max(message_batches, key=len)), 5)
 
@@ -51,7 +53,9 @@ class TestConsumeMessageBatch(unittest.TestCase):
             def handle_message_batch(self, message_batch: List[Message]):
                 raise Exception("Failed to handle message batch")
 
-            def handle_batch_processing_exception(self, messages: List[Message], exception):
+            def handle_batch_processing_exception(
+                self, messages: List[Message], exception
+            ):
                 exceptions.append(exception)
 
         with async_sqs(TestBatchConsumer, batch_size=5) as (sqs_client, queue):

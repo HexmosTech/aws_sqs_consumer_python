@@ -33,8 +33,8 @@ class Message:
     def parse(message_dict):
         message_attributes_dict = message_dict.get("MessageAttributes", {})
         message_attributes = {
-            attribute: MessageAttributeValue.parse(attribute_value_dict)
-            for attribute, attribute_value_dict in message_attributes_dict.items()
+            attribute: MessageAttributeValue.parse(attribute_value)
+            for attribute, attribute_value in message_attributes_dict.items()
         }
         message = Message(**message_dict)
         message.MessageAttributes = message_attributes

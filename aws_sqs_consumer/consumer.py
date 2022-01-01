@@ -47,11 +47,12 @@ class Consumer:
     def handle_message(self, message: Message):
         """
         Called when a single message is received.
-        Write your own logic for handling the message by overriding this method.
+        Write your own logic for handling the message
+        by overriding this method.
 
         Note:
-            * If `batch_size` is greater than 1, `handle_message_batch(message)`
-              is called instead.
+            * If `batch_size` is greater than 1,
+              `handle_message_batch(message)` is called instead.
             * Any unhandled exception will be available in
               `handle_processing_exception(message, exception)` method.
         """
@@ -60,7 +61,8 @@ class Consumer:
     def handle_message_batch(self, messages: List[Message]):
         """
         Called when a message batch is received.
-        Write your own logic for handling the message batch by overriding this method.
+        Write your own logic for handling the message batch
+        by overriding thismethod.
 
         Note:
             * If `batch_size` equal to 1, `handle_message(message)`
@@ -80,7 +82,9 @@ class Consumer:
         """
         traceback.print_exc()
 
-    def handle_batch_processing_exception(self, messages: List[Message], exception):
+    def handle_batch_processing_exception(
+        self, messages: List[Message], exception
+    ):
         """
         Called when an exception is thrown while processing a message batch
         including messsage batch deletion from the queue.

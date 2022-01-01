@@ -10,7 +10,8 @@ class SimpleSQSConsumer(Consumer):
 
 class TestConsumerAttributes(unittest.TestCase):
     def setUp(self) -> None:
-        self.queue_url = "https://eu-west-1.queue.amazonaws.com/123456789012/test_queue"
+        self.queue_url = \
+            "https://eu-west-1.queue.amazonaws.com/123456789012/test_queue"
 
     def test_mandatory_queue_url(self):
         with self.assertRaisesRegex(TypeError, "queue_url"):

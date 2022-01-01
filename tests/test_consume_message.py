@@ -80,7 +80,9 @@ class TestConsumeMessage(unittest.TestCase):
             "ApproximateReceiveCount",
             "ApproximateFirstReceiveTimestamp"
         ]
-        with async_sqs(TestConsumer, attribute_names=attribute_names) as (sqs_client, queue):
+        with async_sqs(
+            TestConsumer, attribute_names=attribute_names
+        ) as (sqs_client, queue):
             sqs_client.send_message(
                 QueueUrl=queue["QueueUrl"],
                 MessageBody="test_message"
