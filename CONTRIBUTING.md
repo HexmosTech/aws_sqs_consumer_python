@@ -1,5 +1,42 @@
 # Contributing
 
+## Development setup
+
+**Install poetry**
+
+We use [`poetry`](https://python-poetry.org/) for packaging and dependency management.
+
+Refer [Poetry installation](https://python-poetry.org/docs/#installation)
+
+```
+poetry --version
+```
+
+**Install dependencies**
+
+```
+poetry install
+```
+
+## Making changes
+
+### Tests
+
+After making any changes, run the tests:
+
+```
+poetry shell
+python -m unittest discover
+```
+
+### Linting
+
+We use [`flake8`](https://flake8.pycqa.org/en/latest/) for linting. Ensure no linting errors:
+
+```
+flake8 aws_sqs_consumer tests
+```
+
 ## Manual publishing (authors only)
 
 ### Prerequisites (One time setup)

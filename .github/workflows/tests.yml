@@ -26,6 +26,10 @@ jobs:
         curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
         $HOME/.poetry/bin/poetry install
 
+    - name: Lint with flake8
+      run: |
+        flake8 aws_sqs_consumer tests
+
     - name: Test with unittest
       run: |
         $HOME/.poetry/bin/poetry run python -m unittest discover
