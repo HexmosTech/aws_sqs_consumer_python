@@ -28,7 +28,7 @@ jobs:
 
     - name: Lint with flake8
       run: |
-        flake8 aws_sqs_consumer tests
+        $HOME/.poetry/bin/poetry run python -m flake8 aws_sqs_consumer tests
 
     - name: Test with unittest
       run: |

@@ -34,7 +34,8 @@ python -m unittest discover
 We use [`flake8`](https://flake8.pycqa.org/en/latest/) for linting. Ensure no linting errors:
 
 ```
-flake8 aws_sqs_consumer tests
+poetry shell
+python -m flake8 aws_sqs_consumer tests
 ```
 
 ## Manual publishing (authors only)
