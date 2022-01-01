@@ -1,0 +1,37 @@
+name: Upload Python Package PyPI
+
+on: workflow_dispatch
+
+jobs:
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.8"
+
+    - name: Install dependencies
+      run: |
+        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python -
+        $HOME/.poetry/bin/poetry install
+
+    - name: Build package
+      run: $HOME/.poetry/bin/poetry build
+
+    - name: Setup PyPI in poetry
+      env:
+        PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+      run: |
+        touch $HOME/.pypirc
+        echo "[pypi]" >> $HOME/.pypirc
+        echo "  username = __token__" >> $HOME/.pypirc
+        echo "  password = $PYPI_API_TOKEN" >> $HOME/.pypirc        
+        $HOME/.poetry/bin/poetry config pypi-token.pypi "$PYPI_API_TOKEN"
+        
+    - name: Publish package to PyPI
+      run: |
+        $HOME/.poetry/bin/poetry publish
