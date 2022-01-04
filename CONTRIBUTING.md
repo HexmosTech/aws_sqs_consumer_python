@@ -35,9 +35,8 @@ python -m unittest discover
 
 ```
 poetry shell
-cd docs
-make html
-python -m http.server --directory _build/html 5001
+(cd docs && make html)
+python -m http.server --directory docs/_build/html 5001
 ```
 
 Open [http://localhost:5001](http://localhost:5001) to see the local documentation site
