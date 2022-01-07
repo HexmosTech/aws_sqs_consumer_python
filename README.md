@@ -128,6 +128,14 @@ consumer.start()
 
 See [`boto3` latest credentials guideline](https://boto3.amazonaws.com/v1/documentation/api/latest/guide/credentials.html).
 
+### Running as a daemon
+
+Currently, there is no built-in support for running as a daemon. But, you can use `nohup`.
+
+```sh
+nohup python my_sqs_consumer.py > sqs_consumer.log 2>&1  </dev/null &
+```
+
 ## API
 
 ### `Consumer(...)`
