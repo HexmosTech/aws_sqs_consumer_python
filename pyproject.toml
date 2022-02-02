@@ -2,12 +2,12 @@
 name = "aws_sqs_consumer"
 version = "0.0.13"
 description = "AWS SQS Consumer"
-authors = ["Flyweight Group <nobody@flyweightgroup.com>"]
+authors = ["Hexmos Technology <nobody@flyweightgroup.com>"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/FlyweightGroup/aws_sqs_consumer_python"
-repository = "https://github.com/FlyweightGroup/aws_sqs_consumer_python"
-documentation = "https://github.com/FlyweightGroup/aws_sqs_consumer_python"
+homepage = "https://aws-sqs-consumer-python.readthedocs.io/"
+repository = "https://github.com/HexmosTech/aws_sqs_consumer_python"
+documentation = "https://aws-sqs-consumer-python.readthedocs.io/"
 keywords = ["sqs", "aws", "sqs-consumer"]
 classifiers = [
     "Development Status :: 4 - Beta",

@@ -18,8 +18,8 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Python AWS SQS Consumer'
-copyright = '2022, Flyweight Group'
-author = 'Flyweight Group'
+copyright = '2022, Hexmos Technology'
+author = 'Hexmos Technology'
 
 
 # -- General configuration ---------------------------------------------------
