@@ -40,7 +40,7 @@ class Consumer:
         self.wait_time_seconds = wait_time_seconds
         self.visibility_timeout_seconds = visibility_timeout_seconds
         self.polling_wait_time_ms = polling_wait_time_ms
-        self._sqs_cilent = sqs_client or boto3.client(
+        self._sqs_client = sqs_client or boto3.client(
             "sqs", region_name=region)
         self._running = False
 
@@ -101,7 +101,7 @@ class Consumer:
         # TODO: Figure out threading/daemon
         self._running = True
         while self._running:
-            response = self._sqs_cilent.receive_message(
+            response = self._sqs_client.receive_message(
                 **self._sqs_client_params)
 
             if not response.get("Messages", []):
@@ -145,7 +145,7 @@ class Consumer:
 
     def _delete_message(self, message: Message):
         try:
-            self._sqs_cilent.delete_message(
+            self._sqs_client.delete_message(
                 QueueUrl=self.queue_url,
                 ReceiptHandle=message.ReceiptHandle
             )
@@ -154,7 +154,7 @@ class Consumer:
 
     def _delete_message_batch(self, messages: List[Message]):
         try:
-            self._sqs_cilent.delete_message_batch(
+            self._sqs_client.delete_message_batch(
                 QueueUrl=self.queue_url,
                 Entries=[
                     {
