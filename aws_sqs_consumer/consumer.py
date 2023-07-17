@@ -49,7 +49,8 @@ class Consumer:
             self._sqs_client = sqs_client or boto3.client(
                 "sqs", region_name=os.environ["AWS_DEFAULT_REGION"])
         else:
-            raise Exception("Please specify the region parameter or set AWS_DEFAULT_REGION env variable.")
+            raise Exception("Please specify the region parameter or set \
+                            AWS_DEFAULT_REGION env variable.")
         self._running = False
 
     def handle_message(self, message: Message):
