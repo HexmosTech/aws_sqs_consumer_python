@@ -19,7 +19,7 @@ class Consumer:
     def __init__(
         self,
         queue_url,
-        region="eu-west-1",
+        region=None,
         sqs_client=None,
         attribute_names=[],
         message_attribute_names=[],
