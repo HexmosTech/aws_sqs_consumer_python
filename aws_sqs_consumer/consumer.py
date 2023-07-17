@@ -2,6 +2,7 @@
 SQS consumer
 """
 
+import os
 import boto3
 import time
 import traceback
@@ -40,8 +41,15 @@ class Consumer:
         self.wait_time_seconds = wait_time_seconds
         self.visibility_timeout_seconds = visibility_timeout_seconds
         self.polling_wait_time_ms = polling_wait_time_ms
-        self._sqs_client = sqs_client or boto3.client(
-            "sqs", region_name=region)
+        if region:
+            self._sqs_client = sqs_client or boto3.client(
+                "sqs", region_name=region)
+        elif "AWS_DEFAULT_REGION" in os.environ:
+            # use boto3 default region
+            self._sqs_client = sqs_client or boto3.client(
+                "sqs", region_name=os.environ["AWS_DEFAULT_REGION"])
+        else:
+            raise Exception("Please specify the region parameter or set AWS_DEFAULT_REGION env variable.")
         self._running = False
 
     def handle_message(self, message: Message):

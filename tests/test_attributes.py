@@ -1,6 +1,7 @@
 import unittest
 
 from aws_sqs_consumer import Consumer, Message
+import os
 
 
 class SimpleSQSConsumer(Consumer):
@@ -18,6 +19,7 @@ class TestConsumerAttributes(unittest.TestCase):
             SimpleSQSConsumer()
 
     def test_default_attributes(self):
+        os.environ["AWS_DEFAULT_REGION"] = "us-west-2"
         consumer = SimpleSQSConsumer(queue_url=self.queue_url)
         self.assertEqual(consumer.queue_url, self.queue_url)
         self.assertEqual(consumer.attribute_names, [])
@@ -37,7 +39,8 @@ class TestConsumerAttributes(unittest.TestCase):
             batch_size=5,
             wait_time_seconds=10,
             visibility_timeout_seconds=30,
-            polling_wait_time_ms=1000
+            polling_wait_time_ms=1000,
+            region="us-west-2"
         )
         self.assertEqual(consumer.queue_url, self.queue_url)
         self.assertEqual(
