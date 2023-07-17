@@ -17,10 +17,10 @@ jobs:
     - name: Install dependencies
       run: |
         curl -sSL https://install.python-poetry.org | python -
-        $HOME/.poetry/bin/poetry install
+        $HOME/.local/bin/poetry install
 
     - name: Build package
-      run: $HOME/.poetry/bin/poetry build
+      run: $HOME/.local/bin/poetry build
 
     - name: Setup PyPI in poetry
       env:
@@ -30,8 +30,8 @@ jobs:
         echo "[pypi]" >> $HOME/.pypirc
         echo "  username = __token__" >> $HOME/.pypirc
         echo "  password = $PYPI_API_TOKEN" >> $HOME/.pypirc        
-        $HOME/.poetry/bin/poetry config pypi-token.pypi "$PYPI_API_TOKEN"
+        $HOME/.local/bin/poetry config pypi-token.pypi "$PYPI_API_TOKEN"
         
     - name: Publish package to PyPI
       run: |
-        $HOME/.poetry/bin/poetry publish
+        $HOME/.local/bin/poetry publish

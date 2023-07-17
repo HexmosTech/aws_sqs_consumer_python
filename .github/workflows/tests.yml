@@ -28,12 +28,12 @@ jobs:
     - name: Install dependencies
       run: |
         curl -sSL https://install.python-poetry.org | python -
-        $HOME/.poetry/bin/poetry install
+        $HOME/.local/bin/poetry install
 
     - name: Lint with flake8
       run: |
-        $HOME/.poetry/bin/poetry run python -m flake8 aws_sqs_consumer tests
+        $HOME/.local/bin/poetry run python -m flake8 aws_sqs_consumer tests
 
     - name: Test with unittest
       run: |
-        $HOME/.poetry/bin/poetry run python -m unittest discover
+        $HOME/.local/bin/poetry run python -m unittest discover

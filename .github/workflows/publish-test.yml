@@ -21,10 +21,10 @@ jobs:
     - name: Install dependencies
       run: |
         curl -sSL https://install.python-poetry.org | python -
-        $HOME/.poetry/bin/poetry install
+        $HOME/.local/bin/poetry install
 
     - name: Build package
-      run: $HOME/.poetry/bin/poetry build
+      run: $HOME/.local/bin/poetry build
 
     - name: Setup Test PyPI in poetry
       env:
@@ -34,10 +34,10 @@ jobs:
         echo "[testpypi]" >> $HOME/.pypirc
         echo "  username = __token__" >> $HOME/.pypirc
         echo "  password = $TEST_PYPI_API_TOKEN" >> $HOME/.pypirc        
-        $HOME/.poetry/bin/poetry config repositories.test-pypi https://test.pypi.org/legacy/
-        $HOME/.poetry/bin/poetry config pypi-token.test-pypi "$TEST_PYPI_API_TOKEN"
+        $HOME/.local/bin/poetry config repositories.test-pypi https://test.pypi.org/legacy/
+        $HOME/.local/bin/poetry config pypi-token.test-pypi "$TEST_PYPI_API_TOKEN"
         
     - name: Publish package to test.pypi.org
       run: |
-        $HOME/.poetry/bin/poetry publish -r test-pypi
+        $HOME/.local/bin/poetry publish -r test-pypi
         
